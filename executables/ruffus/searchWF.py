@@ -1,3 +1,5 @@
+# identification workflow for systeMHC
+
 #!/usr/bin/env python
 import os
 import sys
@@ -7,6 +9,7 @@ from multiprocessing import freeze_support
 from appliapps.examples.a_pyecho import PythonEcho
 from appliapps.flow.merge import Merge
 from appliapps.flow.split import Split
+from appliapps.tpp.dropbox import Copy2IdentDropbox
 from appliapps.tpp.enginecollate import EngineCollate
 from appliapps.tpp.interprophet import InterProphet
 from appliapps.tpp.peptideprophet import PeptideProphetSequence
@@ -44,10 +47,7 @@ IPROPHET_ARGS = MINPROB=0
 
 
 ## Parameters
-MZXML=D:/projects/p1958/data/datafiles/mzXML/PBMC1_Tubingen_120724_CB_Buffy18_W_20_Rep1_msms1_c.mzXML,D:/projects/p1958/data/datafiles/mzXML/PBMC1_Tubingen_120724_CB_Buffy18_W_20_Rep2_msms2_c.mzXML,D:/projects/p1958/data/datafiles/mzXML/PBMC1_Tubingen_120724_CB_Buffy18_W_20_Rep3_msms3_c.mzXML
-
-#D:/projects/p1958/data/datafiles/mzXML/PBMC#1_Tubingen_120724_CB_Buffy18_W_20_Rep4_msms4_c.mzXML
-#D:/projects/p1958/data/datafiles/mzXML/PBMC#1_Tubingen_120724_CB_Buffy18_W_20_Rep5_msms5_c.mzXML
+MZXML=D:/projects/p1958/data/datafiles/mzXML/PBMC1_Tubingen_120724_CB_Buffy18_W_20_Rep1_msms1_c.mzXML,D:/projects/p1958/data/datafiles/mzXML/PBMC1_Tubingen_120724_CB_Buffy18_W_20_Rep2_msms2_c.mzXML,D:/projects/p1958/data/datafiles/mzXML/PBMC1_Tubingen_120724_CB_Buffy18_W_20_Rep3_msms3_c.mzXML,D:/projects/p1958/data/datafiles/mzXML/PBMC1_Tubingen_120724_CB_Buffy18_W_20_Rep4_msms4_c.mzXML,D:/projects/p1958/data/datafiles/mzXML/PBMC1_Tubingen_120724_CB_Buffy18_W_20_Rep5_msms5_c.mzXML
 #D:/projects/p1958/data/datafiles/mzXML/C1R1_Monash_RS_20141103_B2702_IDA_c.mzXML,D:/projects/p1958/data/datafiles/mzXML/C1R1_Monash_RS_20141103_B2703_IDA_c.mzXML,D:/projects/p1958/data/datafiles/mzXML/C1R1_Monash_RS_20141103_B2704_IDA_c.mzXML
 #,D:/projects/p1958/data/datafiles/mzXML/C1R1_Monash_RS_20141103_B2705_IDA_c.mzXML
 
@@ -129,9 +129,17 @@ def datasetiprophet(infile, outfile):
     #subprocess.check_call(['python', basepath + 'appliapps/tpp/interprophet.py',
     #                       '--INPUT', infile, '--OUTPUT', outfile])
 
+@follows(datasetiprophet)
+@files("protxml2openbis.ini", "copy2dropbox.ini")
+def copy2dropbox(infile, outfile):
+    sys.argv = [ '--INPUT', infile, '--OUTPUT', outfile]
+    Copy2IdentDropbox.main()
+
+
 if __name__ == '__main__':
 
     freeze_support() # Optional under circumstances described in docs
-    pipeline_run([datasetiprophet],multiprocess=3)
+    pipeline_run([copy2dropbox],multiprocess=3)
+
 
 #pipeline_printout_graph ('flowchart.png','png',[copy2dropbox],no_key_legend = False) #svg
