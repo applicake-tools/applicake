@@ -28,7 +28,7 @@ class InterProphet(WrappedApp):
             info[Keys.PEPXML] = [info[Keys.PEPXML]]
 
         command = '{exe} {arg} {pepxml} {result}'.format(exe = os.path.join(info['TPPDIR'],info['IPROPHET_EXE'])
-                                                         , arg=info['IPROPHET_ARGS'],pepxml= ' '.join( info[Keys.PEPXML] ),
+                                                         , arg=info['IPROPHET_ARGS'], pepxml= ' '.join( info[Keys.PEPXML] ),
                                         result = result)
         info[Keys.PEPXML] = result
         return info, command

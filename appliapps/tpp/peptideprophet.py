@@ -12,7 +12,6 @@ class PeptideProphetSequence(WrappedApp):
     Corrects pepxml output to make compatible with TPP and openms, then executes xinteract
     (step by step because of semiTrypsin option)
     """
-
     def add_args(self):
         return [
             Argument(Keys.WORKDIR, KeyHelp.WORKDIR),

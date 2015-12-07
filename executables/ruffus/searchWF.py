@@ -130,11 +130,10 @@ def datasetiprophet(infile, outfile):
     #                       '--INPUT', infile, '--OUTPUT', outfile])
 
 @follows(datasetiprophet)
-@files("protxml2openbis.ini", "copy2dropbox.ini")
+@files("datasetiprophet.ini", "copy2dropbox.ini")
 def copy2dropbox(infile, outfile):
     sys.argv = [ '--INPUT', infile, '--OUTPUT', outfile]
     Copy2IdentDropbox.main()
-
 
 if __name__ == '__main__':
 
