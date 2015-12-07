@@ -3,7 +3,7 @@
 import unittest
 import sys
 
-from appliapps.tpp.searchengines.modifications import genmodstr_to_engine
+from toolscake.apps.tpp.searchengines.modifications import genmodstr_to_engine
 
 
 class Test(unittest.TestCase):

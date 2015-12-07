@@ -4,7 +4,7 @@ import shutil
 import tempfile
 import unittest
 
-from appliapps.tpp.fdr import get_iprob_for_fdr
+from toolscake.apps.tpp.fdr import get_iprob_for_fdr
 
 
 class Test(unittest.TestCase):

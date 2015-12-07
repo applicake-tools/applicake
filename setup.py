@@ -1,12 +1,15 @@
 from setuptools import setup
 
 setup(
-    name="applicake",
+    name="toolscake",
     version="0.0.1",
     author="Lorenz Blum",
+    maintainer=['Lorenz Blum', 'Witold Wolski'],
     author_email="blum@id.ethz.ch",
+    maintainer_email=["blum@id.ethz.ch",'wewolski@gmail.com'],
     description="doing this and that",
     license="BSD",
-    packages=['applicake' , 'appliapps'],
-    install_requires=["Unimod"]
+    packages=['toolscake'],
+    url='https://github.com/applicake-tools/applicake',
+    install_requires=['Unimod','applicake']
 )
