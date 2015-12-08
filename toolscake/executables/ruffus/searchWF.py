@@ -19,6 +19,8 @@ from toolscake.apps.tpp.searchengines.myrimatch import Myrimatch
 
 basepath = os.path.dirname(__file__) + '/../../'
 
+
+
 def setup():
     if len(sys.argv) > 1 and sys.argv[1] == 'cont':
         print 'Continuing with existing input.ini (Ruffus should skip to the right place automatically)'
