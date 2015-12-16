@@ -6,13 +6,8 @@ from __future__ import print_function
 import sys
 import os.path
 import csv
-import pandas as pd
-# from msproteomicstoolslib.format import pepXMLReader
 
 from pyteomics import pepxml
-
-
-
 
 def iprophetpepxml2csv(infile, outfile):
     # outfile = os.path.splitext(infile)[0] + '.csv'
@@ -36,7 +31,7 @@ def iprophetpepxml2csv(infile, outfile):
         search_hit = hit['search_hit'][0]
 
         result['modified_peptide'] = search_hit['modified_peptide']
-        result['search_hit'] = search_hit['peptide']
+        result['peptide'] = search_hit['peptide']
         analysis_result = search_hit['analysis_result'][1]
         iprophet_probability = analysis_result['interprophet_result'][ 'probability']
         result['iprophet_probability'] = iprophet_probability
