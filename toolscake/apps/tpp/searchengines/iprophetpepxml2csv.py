@@ -4,54 +4,84 @@
 from __future__ import print_function
 
 import sys
-import os.path
-import csv
-import pandas as pd
-# from msproteomicstoolslib.format import pepXMLReader
-
 from pyteomics import pepxml
 
+# !/usr/bin/env python
+import csv
+import os
+
+from applicake.base.app import BasicApp
+from applicake.base.coreutils.arguments import Argument
+from applicake.base.coreutils.keys import Keys, KeyHelp
 
 
+class AnnotProtxmlFromUpdatedCsv(BasicApp):
+    def add_args(self):
+        return [
+            Argument(Keys.WORKDIR, KeyHelp.WORKDIR),
+            Argument(Keys.PROTXML, Keys.PEPXML),
+            Argument('PEPCSV', 'Path to output CSV - result of pepxml conversion'),
+        ]
 
-def iprophetpepxml2csv(infile, outfile):
-    # outfile = os.path.splitext(infile)[0] + '.csv'
-    reader = pepxml.read(infile)
-    f = open(outfile, 'wb')
-    writer = csv.writer(f, delimiter='\t')
+    def run(self, log, info):
+        """
+        After ProteinQuantifier puts abundances from consensusXML to csv,
+        put abundances back to original protXML file.
+        """
+        # correct csv with right header
+        pepxml_in = info[Keys.PEPXML]
+        info['PEPCSV'] = os.path.join(info[Keys.WORKDIR], "ipeptide.csv")
+        csv_out = info['PEPCSV']
+        self.iprophetpepxml_csv(pepxml_in, csv_out)
 
-    # modifications_example = [{'position': 20, 'mass': 160.0306}]
+        return info
 
-    header_set = False
+    @staticmethod
+    def iprophetpepxml_csv(infile, outfile):
+        """
+        :param infile: input pepxml
+        :param outfile: outcsv
+        :return:
+        """
+        # outfile = os.path.splitext(infile)[0] + '.csv'
+        reader = pepxml.read(infile)
+        f = open(outfile, 'wb')
+        writer = csv.writer(f, delimiter='\t')
 
-    result = {}
-    for hit in reader:
-        if not 'search_hit' in hit:
-            continue
-        #result = hit
-        result['retention_time_sec'] = hit['retention_time_sec']
-        result['assumed_charge'] = hit['assumed_charge']
-        result['spectrum'] = hit['spectrum']
-        result['nrhit'] = len(hit['search_hit'])
-        search_hit = hit['search_hit'][0]
+        # modifications_example = [{'position': 20, 'mass': 160.0306}]
 
-        result['modified_peptide'] = search_hit['modified_peptide']
-        result['search_hit'] = search_hit['peptide']
-        analysis_result = search_hit['analysis_result'][1]
-        iprophet_probability = analysis_result['interprophet_result'][ 'probability']
-        result['iprophet_probability'] = iprophet_probability
-        result['protein_id']= search_hit['proteins'][0]['protein']
-        result['nrproteins'] = len(search_hit['proteins'])
-        if not header_set:
-            writer.writerow(result.keys())
-            header_set = True
-        writer.writerow(result.values())
-    f.close()
+        header_set = False
+
+        result = {}
+        for hit in reader:
+            if not 'search_hit' in hit:
+                continue
+            # result = hit
+            result['retention_time_sec'] = hit['retention_time_sec']
+            result['assumed_charge'] = hit['assumed_charge']
+            result['spectrum'] = hit['spectrum']
+            result['nrhit'] = len(hit['search_hit'])
+            search_hit = hit['search_hit'][0]
+
+            result['modified_peptide'] = search_hit['modified_peptide']
+            result['search_hit'] = search_hit['peptide']
+            analysis_result = search_hit['analysis_result'][1]
+            iprophet_probability = analysis_result['interprophet_result']['probability']
+            result['iprophet_probability'] = iprophet_probability
+            result['protein_id'] = search_hit['proteins'][0]['protein']
+            result['nrproteins'] = len(search_hit['proteins'])
+            if not header_set:
+                writer.writerow(result.keys())
+                header_set = True
+            writer.writerow(result.values())
+        f.close()
+
 
 if __name__ == "__main__":
     infile = sys.argv[1]
     outfile = os.path.splitext(infile)[0] + '.tab'
-    iprophetpepxml2csv(infile, outfile)
+    AnnotProtxmlFromUpdatedCsv.iprophetpepxml2csv(infile, outfile)
+
 
 
 ## MYRIMATCH
@@ -100,7 +130,6 @@ if __name__ == "__main__":
     'num_target_comparisons': '936',
     'spectrumNativeID': 'controllerType=0 controllerNumber=1 scan=1380'
 }
-
 
 ## X!Tandem
 
