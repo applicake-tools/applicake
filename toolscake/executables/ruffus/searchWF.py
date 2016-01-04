@@ -22,54 +22,8 @@ basepath = os.path.dirname(__file__) + '/../../'
 
 
 
-def setup():
-    if len(sys.argv) > 1 and sys.argv[1] == 'cont':
-        print 'Continuing with existing input.ini (Ruffus should skip to the right place automatically)'
-    else:
-        print 'Starting from scratch by creating new input.ini'
-        subprocess.call("rm *ini* *.log", shell=True)
-        with open("input.ini", 'w+') as f:
-            f.write("""
-LOG_LEVEL = DEBUG
-COMMENT = WFTEST - newUPS TPP
-
-# Search parameters
-FDR_CUTOFF = 0.01
-FDR_TYPE = iprophet-pepFDR
-FRAGMASSERR = 0.5
-FRAGMASSUNIT = Da
-PRECMASSERR = 15
-PRECMASSUNIT = ppm
-MISSEDCLEAVAGE = 0
-ENZYME = Nonspecific
-STATIC_MODS =
-VARIABLE_MODS = Oxidation (M)
-
-## TPP
-DECOY_STRING = DECOY_
-IPROPHET_ARGS = MINPROB=0
 
 
-## Parameters
-MZXML=D:/projects/p1958/data/datafiles/mzXML/PBMC1_Tubingen_120724_CB_Buffy18_W_20_Rep1_msms1_c.mzXML,D:/projects/p1958/data/datafiles/mzXML/PBMC1_Tubingen_120724_CB_Buffy18_W_20_Rep2_msms2_c.mzXML,D:/projects/p1958/data/datafiles/mzXML/PBMC1_Tubingen_120724_CB_Buffy18_W_20_Rep3_msms3_c.mzXML,D:/projects/p1958/data/datafiles/mzXML/PBMC1_Tubingen_120724_CB_Buffy18_W_20_Rep4_msms4_c.mzXML,D:/projects/p1958/data/datafiles/mzXML/PBMC1_Tubingen_120724_CB_Buffy18_W_20_Rep5_msms5_c.mzXML
-#D:/projects/p1958/data/datafiles/mzXML/C1R1_Monash_RS_20141103_B2702_IDA_c.mzXML,D:/projects/p1958/data/datafiles/mzXML/C1R1_Monash_RS_20141103_B2703_IDA_c.mzXML,D:/projects/p1958/data/datafiles/mzXML/C1R1_Monash_RS_20141103_B2704_IDA_c.mzXML
-#,D:/projects/p1958/data/datafiles/mzXML/C1R1_Monash_RS_20141103_B2705_IDA_c.mzXML
-
-DBASE=D:/projects/p1958/data/databases/CNCL_05640_2015_09_DECOY.fasta
-
-
-
-COMET_DIR=C:/Users/wolski/prog/searchgui/resources/Comet/windows/windows_64bit
-COMET_EXE=comet.exe
-MYRIMATCH_DIR=c:/Users/wolski/prog/searchgui/resources/MyriMatch/windows/windows_64bit
-MYRIMATCH_EXE=myrimatch.exe
-TPPDIR=D:/projects/p1958/prog/tpp/
-
-
-""")
-
-
-@follows(setup)
 @files("input.ini", "inputfix.ini")
 def biopersdb(infile, outfile):
     sys.argv = ['--INPUT', infile, '--OUTPUT', outfile]
@@ -141,10 +95,58 @@ def convert2csv(infile, outfile):
     sys.argv = [ '--INPUT', infile, '--OUTPUT', outfile]
     IprohetPepXML2CSV.main()
 
-if __name__ == '__main__':
 
-    freeze_support() # Optional under circumstances described in docs
+
+
+def setupWindows():
+    if len(sys.argv) > 1 and sys.argv[1] == 'cont':
+        print 'Continuing with existing input.ini (Ruffus should skip to the right place automatically)'
+    else:
+        print 'Starting from scratch by creating new input.ini'
+        subprocess.call("rm *ini* *.log", shell=True)
+        with open("input.ini", 'w+') as f:
+            f.write("""
+LOG_LEVEL = DEBUG
+COMMENT = WFTEST - newUPS TPP
+
+# Search parameters
+FDR_CUTOFF = 0.01
+FDR_TYPE = iprophet-pepFDR
+FRAGMASSERR = 0.5
+FRAGMASSUNIT = Da
+PRECMASSERR = 15
+PRECMASSUNIT = ppm
+MISSEDCLEAVAGE = 0
+ENZYME = Nonspecific
+STATIC_MODS =
+VARIABLE_MODS = Oxidation (M)
+
+## TPP
+DECOY_STRING = DECOY_
+IPROPHET_ARGS = MINPROB=0
+
+
+## Parameters
+MZXML=D:/projects/p1958/data/datafiles/mzXML/PBMC1_Tubingen_120724_CB_Buffy18_W_20_Rep1_msms1_c.mzXML,D:/projects/p1958/data/datafiles/mzXML/PBMC1_Tubingen_120724_CB_Buffy18_W_20_Rep2_msms2_c.mzXML
+#,D:/projects/p1958/data/datafiles/mzXML/PBMC1_Tubingen_120724_CB_Buffy18_W_20_Rep3_msms3_c.mzXML,D:/projects/p1958/data/datafiles/mzXML/PBMC1_Tubingen_120724_CB_Buffy18_W_20_Rep4_msms4_c.mzXML,D:/projects/p1958/data/datafiles/mzXML/PBMC1_Tubingen_120724_CB_Buffy18_W_20_Rep5_msms5_c.mzXML
+
+
+DBASE=D:/projects/p1958/data/databases/CNCL_05640_2015_09_DECOY.fasta
+COMET_DIR=C:/Users/wolski/prog/applicake-tools/SearchCake_Binaries/Comet/windows/windows_64bit
+COMET_EXE=comet.exe
+MYRIMATCH_DIR=C:/Users/wolski/prog/applicake-tools/SearchCake_Binaries/MyriMatch/windows/windows_64bit
+MYRIMATCH_EXE=myrimatch.exe
+TPPDIR=C:/Users/wolski/prog/applicake-tools/SearchCake_Binaries/tpp/windows/windows_64bit
+
+""")
+
+
+def runPipline():
+    freeze_support()
     pipeline_run([convert2csv],multiprocess=3)
 
+if __name__ == '__main__':
+    setupWindows()
+    runPipline()
 
 #pipeline_printout_graph ('flowchart.png','png',[copy2dropbox],no_key_legend = False) #svg
