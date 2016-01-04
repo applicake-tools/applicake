@@ -15,6 +15,7 @@ from toolscake.apps.tpp.dropbox import Copy2IdentDropbox
 from toolscake.apps.tpp.interprophet import InterProphet
 from toolscake.apps.tpp.peptideprophet import PeptideProphetSequence
 from toolscake.apps.tpp.searchengines.comet import Comet
+from toolscake.apps.tpp.searchengines.iprophetpepxml2csv import IprohetPepXML2CSV
 from toolscake.apps.tpp.searchengines.myrimatch import Myrimatch
 
 basepath = os.path.dirname(__file__) + '/../../'
@@ -55,6 +56,8 @@ MZXML=D:/projects/p1958/data/datafiles/mzXML/PBMC1_Tubingen_120724_CB_Buffy18_W_
 #,D:/projects/p1958/data/datafiles/mzXML/C1R1_Monash_RS_20141103_B2705_IDA_c.mzXML
 
 DBASE=D:/projects/p1958/data/databases/CNCL_05640_2015_09_DECOY.fasta
+
+
 
 COMET_DIR=C:/Users/wolski/prog/searchgui/resources/Comet/windows/windows_64bit
 COMET_EXE=comet.exe
@@ -134,14 +137,14 @@ def datasetiprophet(infile, outfile):
 
 @follows(datasetiprophet)
 @files("datasetiprophet.ini", "copy2dropbox.ini")
-def copy2dropbox(infile, outfile):
+def convert2csv(infile, outfile):
     sys.argv = [ '--INPUT', infile, '--OUTPUT', outfile]
-    Copy2IdentDropbox.main()
+    IprohetPepXML2CSV.main()
 
 if __name__ == '__main__':
 
     freeze_support() # Optional under circumstances described in docs
-    pipeline_run([copy2dropbox],multiprocess=3)
+    pipeline_run([convert2csv],multiprocess=3)
 
 
 #pipeline_printout_graph ('flowchart.png','png',[copy2dropbox],no_key_legend = False) #svg
