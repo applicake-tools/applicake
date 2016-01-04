@@ -29,7 +29,6 @@ def iprophetpepxml2csv(infile, outfile):
         result['spectrum'] = hit['spectrum']
         result['nrhit'] = len(hit['search_hit'])
         search_hit = hit['search_hit'][0]
-
         result['modified_peptide'] = search_hit['modified_peptide']
         result['peptide'] = search_hit['peptide']
         analysis_result = search_hit['analysis_result'][1]
