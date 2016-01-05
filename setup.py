@@ -11,5 +11,5 @@ setup(
     license="BSD",
     packages=['toolscake'],
     url='https://github.com/applicake-tools/applicake',
-    install_requires=['Unimod','applicake', 'pyteomics', 'ruffus']
+    install_requires=['Unimod','applicake', 'pyteomics', 'ruffus', 'configobj', 'lxml', 'numpy']
 )

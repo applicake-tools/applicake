@@ -21,3 +21,7 @@ python.exe .\appliapps\examples\cp.py --FILE "test"
 # Related Projects
 https://github.com/iracooke/protk
 
+
+On ubuntu you also need to install:
+
+apt-get install libxml2-dev libxslt1-dev python-dev

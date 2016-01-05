@@ -1,17 +1,18 @@
 # identification workflow for systeMHC
 
 #!/usr/bin/env python
+import glob
 import os
 import sys
 import subprocess
 from multiprocessing import freeze_support
+import platform
 
 from ruffus import *
 
 from applicake.apps.examples.a_pyecho import PythonEcho
 from applicake.apps.flow.merge import Merge
 from applicake.apps.flow.split import Split
-from toolscake.apps.tpp.dropbox import Copy2IdentDropbox
 from toolscake.apps.tpp.interprophet import InterProphet
 from toolscake.apps.tpp.peptideprophet import PeptideProphetSequence
 from toolscake.apps.tpp.searchengines.comet import Comet
@@ -19,8 +20,6 @@ from toolscake.apps.tpp.searchengines.iprophetpepxml2csv import IprohetPepXML2CS
 from toolscake.apps.tpp.searchengines.myrimatch import Myrimatch
 
 basepath = os.path.dirname(__file__) + '/../../'
-
-
 
 
 
@@ -96,16 +95,57 @@ def convert2csv(infile, outfile):
     IprohetPepXML2CSV.main()
 
 
+def setupLinux():
+    print 'Starting from scratch by creating new input.ini'
+    for fl in glob.glob("*.ini"):
+        print fl
+        os.remove(fl)
+    for fl in glob.glob("*.log"):
+        print fl
+        os.remove(fl)
+
+    with open("input.ini", 'w+') as f:
+            f.write("""
+LOG_LEVEL = DEBUG
+COMMENT = WFTEST - newUPS TPP
+
+# Search parameters
+FDR_CUTOFF = 0.01
+FDR_TYPE = iprophet-pepFDR
+FRAGMASSERR = 0.5
+FRAGMASSUNIT = Da
+PRECMASSERR = 15
+PRECMASSUNIT = ppm
+MISSEDCLEAVAGE = 0
+ENZYME = Nonspecific
+STATIC_MODS =
+VARIABLE_MODS = Oxidation (M)
+
+## TPP
+DECOY_STRING = DECOY_
+IPROPHET_ARGS = MINPROB=0
+
+
+## Parameters
+MZXML=/home/witold/prog/SysteMHC_Data/mzXML/PBMC1_Tubingen_120724_CB_Buffy18_W_20_Rep1_msms1_c.mzXML,/home/witold/prog/SysteMHC_Data/mzXML/PBMC1_Tubingen_120724_CB_Buffy18_W_20_Rep2_msms2_c.mzXML,/home/witold/prog/SysteMHC_Data/mzXML/PBMC1_Tubingen_120724_CB_Buffy18_W_20_Rep3_msms3_c.mzXML,/home/witold/prog/SysteMHC_Data/mzXML/PBMC1_Tubingen_120724_CB_Buffy18_W_20_Rep4_msms4_c.mzXML,/home/witold/prog/SysteMHC_Data/mzXML/PBMC1_Tubingen_120724_CB_Buffy18_W_20_Rep5_msms5_c.mzXML
+
+DBASE=/home/witold/prog/SysteMHC_Data/fasta/CNCL_05640_2015_09_DECOY.fasta
+
+COMET_DIR=/home/witold/prog/SearchCake_Binaries/Comet/linux
+COMET_EXE=comet.exe
+MYRIMATCH_DIR=/home/witold/prog/SearchCake_Binaries/MyriMatch/linux/linux_64bit
+MYRIMATCH_EXE=myrimatch
+TPPDIR=/home/witold/prog/temp
+
+""")
+
 
 
 def setupWindows():
-    if len(sys.argv) > 1 and sys.argv[1] == 'cont':
-        print 'Continuing with existing input.ini (Ruffus should skip to the right place automatically)'
-    else:
-        print 'Starting from scratch by creating new input.ini'
-        subprocess.call("rm *ini* *.log", shell=True)
-        with open("input.ini", 'w+') as f:
-            f.write("""
+    print 'Starting from scratch by creating new input.ini'
+    subprocess.call("rm *ini* *.log", shell=True)
+    with open("input.ini", 'w+') as f:
+        f.write("""
 LOG_LEVEL = DEBUG
 COMMENT = WFTEST - newUPS TPP
 
@@ -144,7 +184,10 @@ def runPipline():
     pipeline_run([convert2csv],multiprocess=3)
 
 if __name__ == '__main__':
-    setupWindows()
+    if platform.system() == 'Linux':
+        setupLinux()
+    else:
+        setupWindows()
     runPipline()
 
 #pipeline_printout_graph ('flowchart.png','png',[copy2dropbox],no_key_legend = False) #svg
