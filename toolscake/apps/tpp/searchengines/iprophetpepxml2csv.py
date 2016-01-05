@@ -18,8 +18,8 @@ class IprohetPepXML2CSV(BasicApp):
     def add_args(self):
         return [
             Argument(Keys.WORKDIR, KeyHelp.WORKDIR),
-            Argument(Keys.PROTXML, Keys.PEPXML),
-            Argument('PEPCSV', 'Path to output CSV - result of pepxml conversion'),
+            Argument(Keys.PEPXML, Keys.PEPXML),
+            #Argument('PEPCSV', 'Path to output CSV - result of pepxml conversion'),
         ]
 
     def run(self, log, info):
