@@ -135,10 +135,9 @@ COMET_DIR=/home/witold/prog/SearchCake_Binaries/Comet/linux
 COMET_EXE=comet.exe
 MYRIMATCH_DIR=/home/witold/prog/SearchCake_Binaries/MyriMatch/linux/linux_64bit
 MYRIMATCH_EXE=myrimatch
-TPPDIR=/home/witold/prog/temp
+TPPDIR=/home/witold/prog/SearchCake_Binaries/tpp/ubuntu14.04/bin/
 
 """)
-
 
 
 def setupWindows():
